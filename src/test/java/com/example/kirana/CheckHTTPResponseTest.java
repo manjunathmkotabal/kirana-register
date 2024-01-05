@@ -9,7 +9,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CheckHTTPResponse {
+public class CheckHTTPResponseTest {
     @LocalServerPort
     private int port;
 
@@ -18,7 +18,7 @@ public class CheckHTTPResponse {
 
     @Test
     public void shouldPassStringMatches(){
-        assertEquals("Hello World from Spring Boot",
-                testRestTemplate.getForObject("http://localhost:"+port+"/",String.class));
+        assertEquals("App is healthy",
+                testRestTemplate.getForObject("http://localhost:"+port+"/health-check",String.class));
     }
 }

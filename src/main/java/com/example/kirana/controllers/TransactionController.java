@@ -36,16 +36,29 @@ public class TransactionController {
     @GetMapping("/fetch")
     public ResponseEntity<?> fetchTransactions(
             @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(value = "group", required = false, defaultValue = "false") boolean group
     ) {
         TransactionOrReport result = new TransactionOrReport();
 
-        if (date != null && group) {
-            // Fetch and group transactions by date for daily reports
-            result.setReports(transactionService.fetchAndGroupTransactionsByDate(date));
-        } else if (date != null) {
-            // Fetch transactions for the specified date
-            result.setTransactions(transactionService.fetchTransactionsByDate(date));
+        if (date != null) {
+            if (group) {
+                // Fetch and group transactions by single date for daily reports
+                result.setReports(transactionService.fetchAndGroupTransactionsByDate(date));
+            } else {
+                // Fetch transactions for the specified date
+                result.setTransactions(transactionService.fetchTransactionsByDate(date));
+            }
+        } else if (startDate != null && endDate != null) {
+            if(group){
+                // Fetch and group transactions by date range for daily reports
+                result.setReports(transactionService.fetchAndGroupTransactionsByDateRange(startDate, endDate));
+            }
+            else {
+                // Fetch transactions within the date range
+                result.setTransactions(transactionService.fetchTransactionsByDateRange(startDate, endDate));
+            }
         } else {
             // Fetch all transactions
             result.setTransactions(transactionService.fetchAllTransactions());
@@ -53,8 +66,6 @@ public class TransactionController {
 
         return ResponseEntity.ok().body(result);
     }
-
-
 
     // Other endpoints for fetching, grouping, etc.
 }
