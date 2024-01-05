@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class FxRatesAPIService {
 
-    public static Map<Currency, BigDecimal> fetchExchangeRates() {
+    public Map<Currency, BigDecimal> fetchExchangeRates() {
         RestTemplate restTemplate = new RestTemplate();
 
         String fxRatesApiUrl = "https://api.fxratesapi.com/latest";
@@ -52,6 +52,9 @@ public class FxRatesAPIService {
         }
 
         return exchangeRates;
+    }
+
+    public void setRestTemplate(RestTemplate restTemplate) {
     }
 }
 

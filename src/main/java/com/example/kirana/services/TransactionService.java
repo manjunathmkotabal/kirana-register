@@ -20,10 +20,12 @@ package com.example.kirana.services;
 @Service
 public class TransactionService implements TransactionServiceInterface {
     private final TransactionRepository transactionRepository;
+    private final FxRatesAPIService fxRatesAPIService;
 
     @Autowired
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository, FxRatesAPIService fxRatesAPIService) {
         this.transactionRepository = transactionRepository;
+        this.fxRatesAPIService = fxRatesAPIService;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class TransactionService implements TransactionServiceInterface {
         transaction.setCurrency(currency);
         transaction.setTransactionDate(LocalDateTime.now());
 
-        Map<Currency, BigDecimal> exchangeRates = FxRatesAPIService.fetchExchangeRates();
+        Map<Currency, BigDecimal> exchangeRates = fxRatesAPIService.fetchExchangeRates();
         if (currency != Currency.INR && currency != Currency.USD) {
 
             // Convert amount to INR and USD based on the fetched rates
@@ -90,6 +92,22 @@ public class TransactionService implements TransactionServiceInterface {
                 .collect(Collectors.toList());
     }
 
+    public List<Transaction> fetchTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = startDate.atStartOfDay();
+        LocalDateTime endOfDay = endDate.atTime(LocalTime.MAX);
+        return transactionRepository.findByTransactionDateBetween(startOfDay, endOfDay);
+    }
+
+    public List<DailyTransactionReport> fetchAndGroupTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
+        List<Transaction> transactions = fetchTransactionsByDateRange(startDate, endDate);
+
+        Map<LocalDate, List<Transaction>> groupedTransactions = transactions.stream()
+                .collect(Collectors.groupingBy(transaction -> transaction.getTransactionDate().toLocalDate()));
+
+        return groupedTransactions.entrySet().stream()
+                .map(entry -> new DailyTransactionReport(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
 
 
     // Implement other service methods for fetching, grouping, etc.
