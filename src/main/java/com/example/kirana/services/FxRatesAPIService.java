@@ -28,8 +28,27 @@ public class FxRatesAPIService {
         Map<Currency, BigDecimal> exchangeRates = new HashMap<>();
 
         if (response.getBody() != null && response.getBody().containsKey("rates")) {
-            Map<Currency, BigDecimal> rates = (Map<Currency, BigDecimal>) response.getBody().get("rates");
-            exchangeRates.putAll(rates);
+            Map<String, Object> rates = (Map<String, Object>) response.getBody().get("rates");
+
+            for (Map.Entry<String, Object> entry : rates.entrySet()) {
+                try {
+                    Currency currency = Currency.valueOf(entry.getKey());
+                    BigDecimal rate;
+
+                    if (entry.getValue() instanceof Integer) {
+                        rate = BigDecimal.valueOf((Integer) entry.getValue());
+                    } else if (entry.getValue() instanceof Double) {
+                        rate = BigDecimal.valueOf((Double) entry.getValue());
+                    } else {
+                        // Handle other types or skip this entry
+                        continue;
+                    }
+
+                    exchangeRates.put(currency, rate);
+                } catch (IllegalArgumentException ignored) {
+                    // Currency not defined in the enum, ignore or handle as needed
+                }
+            }
         }
 
         return exchangeRates;

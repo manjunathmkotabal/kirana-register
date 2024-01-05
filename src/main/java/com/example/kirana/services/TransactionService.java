@@ -2,7 +2,7 @@ package com.example.kirana.services;
 
         import com.example.kirana.constants.enums.Currency;
         import com.example.kirana.entities.Transaction;
-        import com.example.kirana.services.FxRatesAPIService;
+        import com.example.kirana.schemas.DailyTransactionReport;
         import com.example.kirana.repository.TransactionRepository;
         import com.example.kirana.schemas.RecordTransactionRequest;
         import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ package com.example.kirana.services;
         import java.time.LocalTime;
         import java.util.List;
         import java.util.Map;
+        import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements TransactionServiceInterface {
@@ -47,9 +48,9 @@ public class TransactionService implements TransactionServiceInterface {
             transaction.setAmountUSD(amountInUSD);
         } else if (currency == Currency.INR) {
             transaction.setAmountINR(amount);
-//            transaction.setAmountUSD(calculateAmountInUSD(amount, Currency.INR,exchangeRates)); // Same amount in USD
+            transaction.setAmountUSD(calculateAmountInUSD(amount, Currency.INR, exchangeRates)); // Same amount in USD
         } else {
-            transaction.setAmountINR(calculateAmountInINR(amount, Currency.USD, exchangeRates));
+            transaction.setAmountINR(calculateAmountInINR(amount, Currency.INR, exchangeRates));
             transaction.setAmountUSD(amount); // Same amount in INR
         }
 
@@ -63,22 +64,33 @@ public class TransactionService implements TransactionServiceInterface {
     }
 
     private BigDecimal calculateAmountInUSD(BigDecimal amount, Currency currency, Map<Currency, BigDecimal> exchangeRates) {
-        BigDecimal exchangeRateToUSD = exchangeRates.get(currency).divide(exchangeRates.get(Currency.USD), 6, RoundingMode.HALF_UP);
-        return amount.multiply(exchangeRateToUSD);
-    }
-    public List<Transaction> fetchTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
-        // Implement logic to fetch transactions within the specified date range
-        // Use transactionRepository or other mechanisms
-
-        // Example:
-        return transactionRepository.findByTransactionDateBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX));
+        BigDecimal exchangeRate = exchangeRates.get(currency);
+        return amount.divide(exchangeRate, 6, RoundingMode.HALF_UP);
     }
 
     public List<Transaction> fetchAllTransactions() {
-        // Implement logic to fetch all transactions
-        // Use transactionRepository or other mechanisms
         return transactionRepository.findAll();
     }
+
+    public List<Transaction> fetchTransactionsByDate(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        return transactionRepository.findByTransactionDateBetween(startOfDay, endOfDay);
+    }
+
+    // Fetch transactions and group them by date for daily reports
+    public List<DailyTransactionReport> fetchAndGroupTransactionsByDate(LocalDate date) {
+        List<Transaction> transactions = fetchTransactionsByDate(date);
+
+        Map<LocalDate, List<Transaction>> groupedTransactions = transactions.stream()
+                .collect(Collectors.groupingBy(transaction -> transaction.getTransactionDate().toLocalDate()));
+
+        return groupedTransactions.entrySet().stream()
+                .map(entry -> new DailyTransactionReport(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+
 
     // Implement other service methods for fetching, grouping, etc.
 }
