@@ -21,7 +21,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @Column(name = "transaction_date")
+    @Column(name = "transactiondate")
     private LocalDateTime transactionDate;
 
     public LocalDateTime getTransactionDate() {

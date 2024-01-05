@@ -2,10 +2,14 @@ package com.example.kirana.controllers;
 
 import com.example.kirana.schemas.RecordTransactionRequest;
 import com.example.kirana.entities.Transaction;
+import com.example.kirana.schemas.TransactionOrReport;
 import com.example.kirana.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,19 +34,27 @@ public class TransactionController {
     }
 
     @GetMapping("/fetch")
-    public List<Transaction> fetchTransactions(@RequestParam(required = false) LocalDate startDate,
-                                               @RequestParam(required = false) LocalDate endDate) {
-        // You can use startDate and endDate directly or create a FetchTransactionsRequest object
-        // and set these parameters based on business logic
-        // Perform fetching operations using transactionService
-        if (startDate != null && endDate != null) {
-            // Fetch transactions based on the date range
-            return transactionService.fetchTransactionsByDateRange(startDate, endDate);
+    public ResponseEntity<?> fetchTransactions(
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(value = "group", required = false, defaultValue = "false") boolean group
+    ) {
+        TransactionOrReport result = new TransactionOrReport();
+
+        if (date != null && group) {
+            // Fetch and group transactions by date for daily reports
+            result.setReports(transactionService.fetchAndGroupTransactionsByDate(date));
+        } else if (date != null) {
+            // Fetch transactions for the specified date
+            result.setTransactions(transactionService.fetchTransactionsByDate(date));
         } else {
-            // Fetch all transactions or apply default logic
-            return transactionService.fetchAllTransactions();
+            // Fetch all transactions
+            result.setTransactions(transactionService.fetchAllTransactions());
         }
+
+        return ResponseEntity.ok().body(result);
     }
+
+
 
     // Other endpoints for fetching, grouping, etc.
 }
