@@ -11,9 +11,17 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service responsible for fetching exchange rates from an external API.
+ */
 @Service
 public class FxRatesAPIService {
 
+    /**
+     * Fetches exchange rates for different currencies from an external API.
+     *
+     * @return A map containing currency rates.
+     */
     public Map<Currency, BigDecimal> fetchExchangeRates() {
         RestTemplate restTemplate = new RestTemplate();
 

@@ -9,7 +9,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,12 +26,27 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    /**
+     * Endpoint to record a transaction based on the provided request.
+     *
+     * @param request The request object containing transaction details such as amount and Currency.
+     * @return The recorded transaction.
+     */
     @PostMapping("/record")
     public Transaction recordTransaction(@Validated @RequestBody RecordTransactionRequest request) {
         // Record the transaction
         return transactionService.recordTransaction(request);
     }
 
+    /**
+     * Endpoint to fetch transactions based on various parameters like date, date range, and grouping.
+     *
+     * @param date      Single date for fetching transactions.
+     * @param startDate Start date for fetching transactions within a range.
+     * @param endDate   End date for fetching transactions within a range.
+     * @param group     Flag to enable grouping for daily reports.
+     * @return Response containing transactions or reports based on the parameters provided.
+     */
     @GetMapping("/fetch")
     public ResponseEntity<?> fetchTransactions(
             @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,

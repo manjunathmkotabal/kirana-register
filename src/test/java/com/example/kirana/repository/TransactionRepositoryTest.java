@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Tests for TransactionRepository
+ */
 @ExtendWith(MockitoExtension.class)
 public class TransactionRepositoryTest {
 

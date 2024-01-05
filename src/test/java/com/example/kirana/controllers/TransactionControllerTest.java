@@ -15,6 +15,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests for TransactionController
+ */
 class TransactionControllerTest {
 
     private final TransactionService transactionService = mock(TransactionService.class);

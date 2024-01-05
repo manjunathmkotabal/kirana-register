@@ -12,6 +12,12 @@ public class DailyTransactionReport {
     private BigDecimal totalAmountINR;
     private BigDecimal totalAmountUSD;
 
+    /**
+     * Constructs a DailyTransactionReport object for a specific date and its associated transactions.
+     *
+     * @param date         The date of the report.
+     * @param transactions List of transactions for the specified date.
+     */
     public DailyTransactionReport(LocalDate date, List<Transaction> transactions) {
         this.date = date;
         this.transactions = transactions;

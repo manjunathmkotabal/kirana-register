@@ -17,6 +17,10 @@ package com.example.kirana.services;
         import java.util.Map;
         import java.util.stream.Collectors;
 
+
+/**
+ * Service responsible for handling transaction-related operations.
+ */
 @Service
 public class TransactionService implements TransactionServiceInterface {
     private final TransactionRepository transactionRepository;
@@ -28,6 +32,11 @@ public class TransactionService implements TransactionServiceInterface {
         this.fxRatesAPIService = fxRatesAPIService;
     }
 
+    /**
+     * Records a transaction based on the provided request data.
+     * @param request The request containing transaction details.
+     * @return The recorded transaction.
+     */
     @Override
     public Transaction recordTransaction(RecordTransactionRequest request) {
         // Implement logic to handle recording transactions
@@ -74,13 +83,25 @@ public class TransactionService implements TransactionServiceInterface {
         return transactionRepository.findAll();
     }
 
+    /**
+     * Fetches transactions for a specific date.
+     *
+     * @param date The date for which transactions are fetched.
+     * @return List of transactions for the provided date.
+     */
     public List<Transaction> fetchTransactionsByDate(LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
         return transactionRepository.findByTransactionDateBetween(startOfDay, endOfDay);
     }
 
-    // Fetch transactions and group them by date for daily reports
+
+    /**
+     * Fetches transactions for a specific date and groups them by date for daily reports.
+     *
+     * @param date The date for which transactions are fetched and grouped.
+     * @return List of daily transaction reports with grouped transactions for the provided date.
+     */
     public List<DailyTransactionReport> fetchAndGroupTransactionsByDate(LocalDate date) {
         List<Transaction> transactions = fetchTransactionsByDate(date);
 
@@ -92,12 +113,26 @@ public class TransactionService implements TransactionServiceInterface {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Fetches transactions within a date range.
+     *
+     * @param startDate The start date of the range.
+     * @param endDate   The end date of the range.
+     * @return List of transactions within the specified date range.
+     */
     public List<Transaction> fetchTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
         LocalDateTime startOfDay = startDate.atStartOfDay();
         LocalDateTime endOfDay = endDate.atTime(LocalTime.MAX);
         return transactionRepository.findByTransactionDateBetween(startOfDay, endOfDay);
     }
 
+    /**
+     * Fetches transactions within a date range and groups them by date for daily reports.
+     *
+     * @param startDate The start date of the range for fetching and grouping transactions.
+     * @param endDate   The end date of the range for fetching and grouping transactions.
+     * @return List of daily transaction reports with grouped transactions within the specified date range.
+     */
     public List<DailyTransactionReport> fetchAndGroupTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
         List<Transaction> transactions = fetchTransactionsByDateRange(startDate, endDate);
 
