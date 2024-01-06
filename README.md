@@ -49,13 +49,6 @@ The Kirana Application is designed to perform transaction functionalities of a d
   logging.level.org.springframework=INFO
   fx.rates.url = https://api.fxratesapi.com/latest
   springfox.documentation.swagger-ui.enabled=true
-  
-  spring.flyway.enabled=true
-  spring.flyway.url=jdbc:postgresql://localhost:5432/Kirana
-  spring.flyway.password= postgres
-  spring.flyway.user= postgres
-  spring.flyway.locations=classpath:db/migration
-  spring.flyway.baseline-on-migrate=true
   ```
   ### Note : replace the above values with correct ones for your env
 
@@ -66,6 +59,10 @@ The Kirana Application is designed to perform transaction functionalities of a d
 * This will start the application on http://localhost:8080.
 
 * Visit : http://localhost:8080/swagger-ui/index.html to try out apis
+
+
+*  Or fork this postman collection : 
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/25361983-ef01fea2-7703-4445-99cd-812676f3cb98?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D25361983-ef01fea2-7703-4445-99cd-812676f3cb98%26entityType%3Dcollection%26workspaceId%3Da25f03ef-1850-4aeb-9ee1-2ece3d1a6d84)
 
 ## API Documentaion : 
 This API manages transactions within the Kirana Application.
