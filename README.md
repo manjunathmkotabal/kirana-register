@@ -9,6 +9,7 @@ The Kirana Application is designed to perform transaction functionalities of a d
 ## Features
  - Containerized app with docker-compose
  - Built in swagger documenation at http://localhost:8080/swagger-ui/index.html
+ - Database Migrations
  - Record Transactions
  - fetch trasactions
  - Group trnsactions based on a given date or range of dates and get the aggregated amount.
@@ -174,6 +175,7 @@ Endpoint to fetch transactions based on date, date range, and grouping.
   ```
 * Navigate to : http://localhost:8080/swagger-ui/index.html for testing
   
+### Note: Replace env variable in application.properties as mentioned above 
 
   
 Author : 
