@@ -33,6 +33,10 @@ The Kirana Application is designed to perform transaction functionalities of a d
   ```
   cd kirana-application
   ```
+* Install dependencies with:
+  ```
+  mvn clean install
+  ```
 
 * Configure environment variable in application.properties(src\main\resources\application.properties):
   ```
