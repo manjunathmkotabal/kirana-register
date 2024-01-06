@@ -64,6 +64,24 @@ The Kirana Application is designed to perform transaction functionalities of a d
 *  Or fork this postman collection : 
 [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/25361983-ef01fea2-7703-4445-99cd-812676f3cb98?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D25361983-ef01fea2-7703-4445-99cd-812676f3cb98%26entityType%3Dcollection%26workspaceId%3Da25f03ef-1850-4aeb-9ee1-2ece3d1a6d84)
 
+
+### Run with Docker
+
+
+* Navigate to the project directory and run docker build:
+  ```
+  docker build --platform linux/amd64 -t spring-kirana .
+  ```
+* Once the build is complete Run docker-compsoe:
+  ```
+  docker-compose up -d
+  ```
+* Navigate to : http://localhost:8080/swagger-ui/index.html for testing
+  
+### Note: Replace env variable in application.properties as mentioned above 
+
+
+
 ## API Documentaion : 
 This API manages transactions within the Kirana Application.
 
@@ -162,21 +180,6 @@ Endpoint to fetch transactions based on date, date range, and grouping.
   ]
 }
 ```
-
-### Run with Docker
-
-
-* Navigate to the project directory and run docker build:
-  ```
-  docker build --platform linux/amd64 -t spring-kirana .
-  ```
-* Once the build is complete Run docker-compsoe:
-  ```
-  docker-compose up -d
-  ```
-* Navigate to : http://localhost:8080/swagger-ui/index.html for testing
-  
-### Note: Replace env variable in application.properties as mentioned above 
 
   
 Author : 
